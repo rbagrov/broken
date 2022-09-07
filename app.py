@@ -1,10 +1,10 @@
-import fastapi, pydantic
+import fastapi, pydantic  # import libraries
 
-app = fastapi.FastAPI()
+app = fastapi.FastAPI() # Initialize application
 
 
 
-class _data(pydantic.BaseModel):
+class _data(pydantic.BaseModel): # create data model
     text: str
 
 
@@ -16,24 +16,34 @@ class _data(pydantic.BaseModel):
         }
 
 
-@app.post("/parser/")
-async def parserHandler(data: _data):
+@app.post("/parser/") # define endpoint name
+async def parserHandler(data: _data): # Handler to handle data
     r = await parser(data)
     return r
 
 async def parser(d: _data) -> str:
-    import json
+    """_summary_
+    Takes data and returns formated response
+    Args:
+        d (_data): _description_
 
-    with open('words.json') as j:
-        data = json.load(j)
-        data = data["words"]
-        count = 0
-        response = d.text.split(" ")
-        for i in d.text.split(" "):
-            for j in data:
-                if i == j:
-                    response[count] = "*****"
-                else:
-                    response[count] = i
-            count += 1
-    return " ".join(response)
+    Returns:
+        str: _description_
+    """
+    import json
+    try:
+        with open('words.json') as j: # parse file
+            data = json.load(j)
+            data = data["words"]
+            count = 0
+            response = d.text.split(" ")
+            for i in d.text.split(" "):
+                for j in data:
+                    if i == j: # business logic
+                        response[count] = "*****"
+                    else:
+                        response[count] = i
+                count += 1
+        return " ".join(response)
+    except Exception as e:
+        return " "
